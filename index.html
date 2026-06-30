@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CTIN PC Audit</title>
+<title>CTIN PC Audit Viewer</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap');
 
@@ -21,8 +21,8 @@
     --red: #ff4f4f;
     --red-dim: rgba(255,79,79,0.12);
     --text: #e2e6f0;
-    --text-muted: #6b7590;
-    --text-dim: #9ba3b8;
+    --muted: #6b7590;
+    --dim: #9ba3b8;
     --mono: 'IBM Plex Mono', monospace;
     --sans: 'IBM Plex Sans', sans-serif;
   }
@@ -38,17 +38,16 @@
     min-height: 100vh;
   }
 
-  /* HEADER */
   header {
     border-bottom: 1px solid var(--border);
     padding: 0 32px;
-    height: 56px;
+    height: 54px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     position: sticky;
     top: 0;
-    background: rgba(13,15,20,0.92);
+    background: rgba(13,15,20,0.94);
     backdrop-filter: blur(12px);
     z-index: 100;
   }
@@ -64,83 +63,25 @@
     color: var(--accent);
   }
 
-  .logo svg { opacity: 0.85; }
-
   .header-badge {
     font-family: var(--mono);
     font-size: 11px;
-    color: var(--text-muted);
+    color: var(--muted);
     border: 1px solid var(--border);
     padding: 3px 10px;
     border-radius: 2px;
   }
 
-  /* MAIN LAYOUT */
   .main {
     max-width: 900px;
     margin: 0 auto;
     padding: 48px 24px 80px;
   }
 
-  /* STEPS */
-  .steps-nav {
-    display: flex;
-    gap: 0;
-    margin-bottom: 48px;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-
-  .step-tab {
-    flex: 1;
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--surface);
-    border-right: 1px solid var(--border);
-    cursor: default;
-    transition: background 0.2s;
-  }
-  .step-tab:last-child { border-right: none; }
-
-  .step-tab.active { background: var(--accent-dim); }
-  .step-tab.done { background: var(--green-dim); }
-
-  .step-num {
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--mono);
-    font-size: 11px;
-    font-weight: 600;
-    flex-shrink: 0;
-    border: 1.5px solid var(--border);
-    color: var(--text-muted);
-  }
-  .step-tab.active .step-num { border-color: var(--accent); color: var(--accent); }
-  .step-tab.done .step-num { border-color: var(--green); background: var(--green); color: #000; font-size: 13px; }
-
-  .step-label {
-    font-size: 12px;
-    color: var(--text-muted);
-    font-weight: 500;
-  }
-  .step-tab.active .step-label { color: var(--text); }
-  .step-tab.done .step-label { color: var(--green); }
-
-  /* PAGE SECTIONS */
   .page { display: none; }
   .page.active { display: block; }
 
-  /* HERO */
-  .hero {
-    margin-bottom: 40px;
-  }
+  .hero { margin-bottom: 36px; }
 
   .hero-tag {
     font-family: var(--mono);
@@ -152,23 +93,45 @@
   }
 
   .hero h1 {
-    font-size: 32px;
+    font-size: 30px;
     font-weight: 300;
     letter-spacing: -0.02em;
     line-height: 1.2;
-    color: var(--text);
-    margin-bottom: 14px;
+    margin-bottom: 12px;
   }
-
   .hero h1 strong { font-weight: 600; }
 
   .hero p {
-    color: var(--text-dim);
+    color: var(--dim);
     font-size: 15px;
     max-width: 560px;
   }
 
-  /* CARD */
+  /* TABS for input mode */
+  .input-tabs {
+    display: flex;
+    gap: 0;
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 18px;
+    width: fit-content;
+  }
+
+  .input-tab {
+    padding: 9px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    transition: all 0.15s;
+  }
+  .input-tab:last-child { border-right: none; }
+  .input-tab:hover { background: var(--surface2); color: var(--text); }
+  .input-tab.active { background: var(--accent-dim); color: var(--accent); }
+
   .card {
     background: var(--surface);
     border: 1px solid var(--border);
@@ -183,94 +146,47 @@
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--muted);
     margin-bottom: 20px;
     padding-bottom: 12px;
     border-bottom: 1px solid var(--border);
   }
 
-  /* FORM */
-  .form-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 16px;
-    margin-bottom: 20px;
-  }
-
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-
-  label {
-    font-size: 12px;
-    font-weight: 500;
-    color: var(--text-dim);
-    letter-spacing: 0.03em;
-  }
-
-  input[type="text"], input[type="email"] {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 10px 14px;
-    color: var(--text);
-    font-family: var(--sans);
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.15s;
-  }
-
-  input[type="text"]:focus, input[type="email"]:focus {
-    border-color: var(--accent);
-  }
-
-  input::placeholder { color: var(--text-muted); }
-
-  /* SCAN MODE */
-  .scan-mode-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-bottom: 24px;
-  }
-
-  .mode-card {
-    border: 1.5px solid var(--border);
-    border-radius: 5px;
-    padding: 16px;
+  .upload-zone {
+    border: 2px dashed var(--border);
+    border-radius: 6px;
+    padding: 48px 24px;
+    text-align: center;
     cursor: pointer;
-    transition: all 0.15s;
-    position: relative;
+    transition: all 0.2s;
   }
-
-  .mode-card:hover { border-color: #3a4260; background: var(--surface2); }
-
-  .mode-card.selected {
+  .upload-zone:hover, .upload-zone.dragover {
     border-color: var(--accent);
     background: var(--accent-dim);
   }
+  .upload-icon { margin-bottom: 14px; opacity: 0.5; }
+  .upload-zone h3 { font-size: 15px; font-weight: 500; margin-bottom: 6px; }
+  .upload-zone p { font-size: 13px; color: var(--muted); }
+  #fileInput { display: none; }
 
-  .mode-card input[type="radio"] {
-    position: absolute;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  .mode-name {
-    font-family: var(--mono);
-    font-size: 13px;
-    font-weight: 600;
+  .paste-area {
+    width: 100%;
+    min-height: 220px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 14px 16px;
     color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .mode-card.selected .mode-name { color: var(--accent); }
-
-  .mode-desc {
+    font-family: var(--mono);
     font-size: 12px;
-    color: var(--text-muted);
-    line-height: 1.5;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.15s;
   }
+  .paste-area:focus { border-color: var(--accent); }
+  .paste-area::placeholder { color: var(--muted); }
 
-  /* BUTTON */
   .btn {
     display: inline-flex;
     align-items: center;
@@ -283,132 +199,26 @@
     cursor: pointer;
     border: none;
     transition: all 0.15s;
-    text-decoration: none;
   }
-
-  .btn-primary {
-    background: var(--accent);
-    color: #fff;
-  }
+  .btn-primary { background: var(--accent); color: #fff; }
   .btn-primary:hover { background: #5aaeff; }
-
-  .btn-secondary {
-    background: var(--surface2);
-    color: var(--text);
-    border: 1px solid var(--border);
-  }
+  .btn-secondary { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
   .btn-secondary:hover { background: #232840; border-color: #3a4260; }
-
-  .btn-green {
-    background: var(--green);
-    color: #000;
-    font-weight: 600;
-  }
-  .btn-green:hover { background: #3dde83; }
-
   .btn-full { width: 100%; justify-content: center; }
 
-  /* STEP 2: INSTRUCTIONS */
-  .instruction-steps {
+  .alert-banner {
     display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .inst-item {
-    display: flex;
-    gap: 18px;
-    padding: 18px 0;
-    border-bottom: 1px solid var(--border);
-    align-items: flex-start;
-  }
-  .inst-item:last-child { border-bottom: none; padding-bottom: 0; }
-
-  .inst-icon {
-    width: 36px;
-    height: 36px;
+    gap: 12px;
+    padding: 14px 18px;
     border-radius: 4px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    background: var(--surface2);
-    font-family: var(--mono);
+    margin-bottom: 16px;
+    align-items: flex-start;
     font-size: 13px;
-    font-weight: 600;
-    color: var(--accent);
-    border: 1px solid var(--border);
-  }
-
-  .inst-content h4 {
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--text);
-    margin-bottom: 4px;
-  }
-
-  .inst-content p {
-    font-size: 13px;
-    color: var(--text-dim);
     line-height: 1.5;
   }
-
-  .code-inline {
-    font-family: var(--mono);
-    font-size: 12px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    padding: 2px 7px;
-    border-radius: 3px;
-    color: var(--yellow);
-  }
-
-  .download-block {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 14px 18px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 8px;
-  }
-
-  .download-info { display: flex; flex-direction: column; gap: 2px; }
-  .download-name { font-family: var(--mono); font-size: 13px; color: var(--text); }
-  .download-size { font-size: 11px; color: var(--text-muted); }
-
-  /* STEP 3: UPLOAD */
-  .upload-zone {
-    border: 2px dashed var(--border);
-    border-radius: 6px;
-    padding: 48px 24px;
-    text-align: center;
-    cursor: pointer;
-    transition: all 0.2s;
-    background: transparent;
-  }
-
-  .upload-zone:hover,
-  .upload-zone.dragover {
-    border-color: var(--accent);
-    background: var(--accent-dim);
-  }
-
-  .upload-icon { margin-bottom: 14px; opacity: 0.5; }
-
-  .upload-zone h3 {
-    font-size: 15px;
-    font-weight: 500;
-    margin-bottom: 6px;
-  }
-
-  .upload-zone p {
-    font-size: 13px;
-    color: var(--text-muted);
-  }
-
-  #fileInput { display: none; }
+  .alert-green { background: var(--green-dim); border: 1px solid rgba(45,202,114,0.3); color: var(--green); }
+  .alert-yellow { background: var(--yellow-dim); border: 1px solid rgba(245,197,66,0.3); color: var(--yellow); }
+  .alert-red { background: var(--red-dim); border: 1px solid rgba(255,79,79,0.3); color: var(--red); }
 
   /* RESULTS */
   .results-header {
@@ -419,19 +229,8 @@
     margin-bottom: 28px;
     flex-wrap: wrap;
   }
-
-  .results-user h2 {
-    font-size: 22px;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    margin-bottom: 4px;
-  }
-
-  .results-user p {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-family: var(--mono);
-  }
+  .results-user h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 4px; }
+  .results-user p { font-size: 13px; color: var(--muted); font-family: var(--mono); }
 
   .risk-badge {
     padding: 6px 16px;
@@ -442,13 +241,11 @@
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
-
   .risk-none, .risk-low { background: var(--green-dim); color: var(--green); border: 1px solid var(--green); }
   .risk-medium { background: var(--yellow-dim); color: var(--yellow); border: 1px solid var(--yellow); }
   .risk-high { background: var(--red-dim); color: var(--red); border: 1px solid var(--red); }
-  .risk-unknown { background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border); }
+  .risk-unknown { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
 
-  /* INFO GRID */
   .info-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -458,123 +255,48 @@
     overflow: hidden;
     margin-bottom: 16px;
   }
-
-  .info-cell {
-    background: var(--surface);
-    padding: 14px 16px;
-  }
-
+  .info-cell { background: var(--surface); padding: 14px 16px; }
   .info-label {
     font-size: 10px;
     font-family: var(--mono);
-    color: var(--text-muted);
+    color: var(--muted);
     letter-spacing: 0.08em;
     text-transform: uppercase;
     margin-bottom: 5px;
   }
+  .info-value { font-size: 13px; font-weight: 500; word-break: break-word; }
 
-  .info-value {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text);
-    word-break: break-word;
-  }
-
-  /* SECTION BLOCKS */
-  .section-block {
-    margin-bottom: 20px;
-  }
-
+  .section-block { margin-bottom: 20px; }
   .section-header {
     font-family: var(--mono);
     font-size: 11px;
     font-weight: 600;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--muted);
     margin-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 10px;
   }
+  .section-header::after { content: ''; flex: 1; height: 1px; background: var(--border); }
 
-  .section-header::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
-
-  /* SPEC TABLE */
-  .spec-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
+  .spec-table { width: 100%; border-collapse: collapse; }
   .spec-table tr { border-bottom: 1px solid var(--border); }
   .spec-table tr:last-child { border-bottom: none; }
+  .spec-table td { padding: 9px 0; font-size: 13px; vertical-align: top; }
+  .spec-table td:first-child { color: var(--muted); width: 200px; padding-right: 16px; font-size: 12px; }
+  .spec-table td:last-child { word-break: break-word; }
 
-  .spec-table td {
-    padding: 9px 0;
-    font-size: 13px;
-    vertical-align: top;
-  }
-
-  .spec-table td:first-child {
-    color: var(--text-muted);
-    width: 200px;
-    padding-right: 16px;
-    flex-shrink: 0;
-    font-size: 12px;
-  }
-
-  .spec-table td:last-child {
-    color: var(--text);
-    word-break: break-word;
-  }
-
-  /* CRACK SUMMARY */
-  .crack-counts {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
-    margin-bottom: 16px;
-  }
-
-  .count-box {
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 4px;
-    padding: 14px;
-    text-align: center;
-  }
-
-  .count-num {
-    font-family: var(--mono);
-    font-size: 24px;
-    font-weight: 600;
-    line-height: 1;
-    margin-bottom: 5px;
-  }
-
-  .count-label {
-    font-size: 11px;
-    color: var(--text-muted);
-  }
-
+  .crack-counts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 16px; }
+  .count-box { background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 14px; text-align: center; }
+  .count-num { font-family: var(--mono); font-size: 24px; font-weight: 600; line-height: 1; margin-bottom: 5px; }
+  .count-label { font-size: 11px; color: var(--muted); }
   .count-high { color: var(--red); }
   .count-medium { color: var(--yellow); }
   .count-total { color: var(--text); }
 
-  /* INDICATOR LIST */
-  .indicator-list {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    max-height: 300px;
-    overflow-y: auto;
-  }
-
+  .indicator-list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
   .indicator-item {
     background: var(--bg);
     border: 1px solid var(--border);
@@ -582,25 +304,13 @@
     padding: 10px 14px;
     font-size: 12px;
     line-height: 1.5;
-    color: var(--text-dim);
+    color: var(--dim);
     font-family: var(--mono);
     word-break: break-all;
   }
 
-  /* SOFTWARE TABLE */
-  .software-table-wrap {
-    max-height: 360px;
-    overflow-y: auto;
-    border: 1px solid var(--border);
-    border-radius: 4px;
-  }
-
-  .software-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 12px;
-  }
-
+  .software-table-wrap { max-height: 360px; overflow-y: auto; border: 1px solid var(--border); border-radius: 4px; }
+  .software-table { width: 100%; border-collapse: collapse; font-size: 12px; }
   .software-table th {
     background: var(--surface2);
     padding: 8px 12px;
@@ -610,27 +320,16 @@
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--text-muted);
+    color: var(--muted);
     position: sticky;
     top: 0;
-    z-index: 1;
     border-bottom: 1px solid var(--border);
   }
-
-  .software-table td {
-    padding: 7px 12px;
-    border-bottom: 1px solid var(--border);
-    color: var(--text-dim);
-    vertical-align: top;
-  }
-
+  .software-table td { padding: 7px 12px; border-bottom: 1px solid var(--border); color: var(--dim); vertical-align: top; }
   .software-table tr:last-child td { border-bottom: none; }
-
   .software-table tr:hover td { background: var(--surface2); color: var(--text); }
-
   .software-name { color: var(--text); font-weight: 500; }
 
-  /* REVIEW TAG */
   .review-tag {
     display: inline-block;
     font-size: 10px;
@@ -644,22 +343,6 @@
     vertical-align: middle;
   }
 
-  .alert-banner {
-    display: flex;
-    gap: 12px;
-    padding: 14px 18px;
-    border-radius: 4px;
-    margin-bottom: 16px;
-    align-items: flex-start;
-    font-size: 13px;
-    line-height: 1.5;
-  }
-
-  .alert-green { background: var(--green-dim); border: 1px solid rgba(45,202,114,0.3); color: var(--green); }
-  .alert-yellow { background: var(--yellow-dim); border: 1px solid rgba(245,197,66,0.3); color: var(--yellow); }
-  .alert-red { background: var(--red-dim); border: 1px solid rgba(255,79,79,0.3); color: var(--red); }
-
-  /* SEARCH */
   .search-bar {
     width: 100%;
     background: var(--bg);
@@ -684,7 +367,6 @@
     border-top: 1px solid var(--border);
   }
 
-  /* SCROLL CUSTOM */
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #2a3050; border-radius: 3px; }
@@ -692,11 +374,8 @@
   @media (max-width: 640px) {
     header { padding: 0 16px; }
     .main { padding: 28px 16px 60px; }
-    .form-row { grid-template-columns: 1fr; }
-    .scan-mode-grid { grid-template-columns: 1fr; }
     .info-grid { grid-template-columns: 1fr 1fr; }
     .crack-counts { grid-template-columns: 1fr 1fr 1fr; }
-    .steps-nav { display: none; }
   }
 </style>
 </head>
@@ -708,155 +387,29 @@
       <rect x="1" y="1" width="16" height="16" rx="2" stroke="#3d9aff" stroke-width="1.5"/>
       <path d="M5 9h8M5 6h5M5 12h6" stroke="#3d9aff" stroke-width="1.5" stroke-linecap="round"/>
     </svg>
-    CTIN PC AUDIT
+    CTIN PC AUDIT VIEWER
   </div>
   <div class="header-badge">v5.0</div>
 </header>
 
 <div class="main">
 
-  <!-- STEP NAV -->
-  <div class="steps-nav" id="stepsNav">
-    <div class="step-tab active" id="nav-1">
-      <div class="step-num" id="num-1">1</div>
-      <div class="step-label">Thông tin</div>
-    </div>
-    <div class="step-tab" id="nav-2">
-      <div class="step-num" id="num-2">2</div>
-      <div class="step-label">Tải & chạy script</div>
-    </div>
-    <div class="step-tab" id="nav-3">
-      <div class="step-num" id="num-3">3</div>
-      <div class="step-label">Upload kết quả</div>
-    </div>
-    <div class="step-tab" id="nav-4">
-      <div class="step-num" id="num-4">4</div>
-      <div class="step-label">Xem báo cáo</div>
-    </div>
-  </div>
-
-  <!-- PAGE 1: INFO -->
-  <div class="page active" id="page-1">
+  <!-- PAGE: UPLOAD/PASTE -->
+  <div class="page active" id="page-upload">
     <div class="hero">
       <div class="hero-tag">// CTIN IT DEPARTMENT</div>
-      <h1>PC Audit<br><strong>Thu thập thông tin máy tính</strong></h1>
-      <p>Nhập thông tin của bạn, tải script, chạy trên máy và upload kết quả để xem báo cáo.</p>
+      <h1>Xem báo cáo<br><strong>PC Audit</strong></h1>
+      <p>Tải lên hoặc dán nội dung file CSV kết quả audit để xem báo cáo trực quan.</p>
     </div>
 
-    <div class="card">
-      <div class="card-title">// 01 — Thông tin người dùng</div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label>Họ và tên *</label>
-          <input type="text" id="fullname" placeholder="Nguyễn Văn A" />
-        </div>
-        <div class="form-group">
-          <label>Email công ty *</label>
-          <input type="email" id="email" placeholder="nguyen.van.a@ctin.vn" />
-        </div>
-      </div>
-
-      <div class="card-title" style="margin-top:8px;">// 02 — Chế độ quét</div>
-
-      <div class="scan-mode-grid">
-        <div class="mode-card" id="mode-fast" onclick="selectMode('Fast')">
-          <input type="radio" name="scanMode" value="Fast">
-          <div class="mode-name">⚡ Fast</div>
-          <div class="mode-desc">Bỏ qua quét file/thư mục đệ quy. Chạy nhanh hơn (~1–2 phút). Phù hợp audit thường kỳ.</div>
-        </div>
-        <div class="mode-card selected" id="mode-full" onclick="selectMode('Full')">
-          <input type="radio" name="scanMode" value="Full" checked>
-          <div class="mode-name">🔍 Full</div>
-          <div class="mode-desc">Quét toàn bộ file/thư mục tìm crack. Mất 3–10 phút. Dùng khi cần kiểm tra kỹ.</div>
-        </div>
-      </div>
-
-      <button class="btn btn-primary btn-full" onclick="goToStep2()">
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M8 13l-4-4M8 13l4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Tiếp theo — Tải script
-      </button>
+    <div class="input-tabs">
+      <div class="input-tab active" id="tab-upload" onclick="switchInputMode('upload')">📁 Tải file CSV</div>
+      <div class="input-tab" id="tab-paste" onclick="switchInputMode('paste')">📋 Dán dữ liệu</div>
     </div>
-  </div>
 
-  <!-- PAGE 2: DOWNLOAD -->
-  <div class="page" id="page-2">
-    <div class="card">
-      <div class="card-title">// Tải và chạy script trên máy</div>
-
-      <div class="instruction-steps">
-        <div class="inst-item">
-          <div class="inst-icon">1</div>
-          <div class="inst-content">
-            <h4>Tải script về máy</h4>
-            <p>Click nút bên dưới để tải file PowerShell về máy tính Windows của bạn.</p>
-            <div class="download-block" style="margin-top:12px;">
-              <div class="download-info">
-                <div class="download-name">audit_pc5.ps1</div>
-                <div class="download-size" id="scriptSizeLabel">Script PowerShell</div>
-              </div>
-              <button class="btn btn-green" onclick="downloadScript()">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v7M7 9l-3-3M7 9l3-3M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                Tải script
-              </button>
-            </div>
-            <div class="download-block" style="margin-top:8px;">
-              <div class="download-info">
-                <div class="download-name">run_audit5.bat</div>
-                <div class="download-size">File chạy nhanh (double-click)</div>
-              </div>
-              <button class="btn btn-secondary" onclick="downloadBat()">
-                <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v7M7 9l-3-3M7 9l3-3M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-                Tải .bat
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="inst-item">
-          <div class="inst-icon">2</div>
-          <div class="inst-content">
-            <h4>Chạy script với quyền Admin</h4>
-            <p>Nhấn phải chuột vào <span class="code-inline">run_audit5.bat</span> → <strong>Run as administrator</strong>. Hoặc mở PowerShell Admin và chạy:</p>
-            <div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:10px 14px;margin-top:10px;">
-              <code style="font-family:var(--mono);font-size:12px;color:var(--yellow);">powershell -ExecutionPolicy Bypass -File audit_pc5.ps1</code>
-            </div>
-            <p style="margin-top:8px;color:var(--text-muted);font-size:12px;">Script sẽ hỏi tên và email (đã tự điền sẵn nếu bạn nhập ở bước 1).</p>
-          </div>
-        </div>
-
-        <div class="inst-item">
-          <div class="inst-icon">3</div>
-          <div class="inst-content">
-            <h4>Lấy file kết quả CSV</h4>
-            <p>Sau khi chạy xong, file CSV được tạo tại:</p>
-            <div style="background:var(--bg);border:1px solid var(--border);border-radius:4px;padding:10px 14px;margin-top:10px;">
-              <code style="font-family:var(--mono);font-size:12px;color:var(--accent);">%USERPROFILE%\Desktop\PC_Audit\audit_TENMAYTÍNH.csv</code>
-            </div>
-          </div>
-        </div>
-
-        <div class="inst-item">
-          <div class="inst-icon">4</div>
-          <div class="inst-content">
-            <h4>Upload file CSV lên web này</h4>
-            <p>Quay lại trang web và upload file CSV để xem báo cáo đầy đủ.</p>
-          </div>
-        </div>
-      </div>
-
-      <div style="display:flex;gap:10px;margin-top:24px;padding-top:20px;border-top:1px solid var(--border);">
-        <button class="btn btn-secondary" onclick="goPage(1)">← Quay lại</button>
-        <button class="btn btn-primary" onclick="goPage(3)" style="flex:1;justify-content:center;">Tiếp theo — Upload CSV →</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PAGE 3: UPLOAD -->
-  <div class="page" id="page-3">
-    <div class="card">
-      <div class="card-title">// Upload file kết quả CSV</div>
-
+    <!-- UPLOAD MODE -->
+    <div class="card" id="mode-upload">
+      <div class="card-title">// Tải file audit_*.csv</div>
       <div class="upload-zone" id="uploadZone" onclick="document.getElementById('fileInput').click()"
            ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
         <div class="upload-icon">
@@ -866,373 +419,51 @@
           </svg>
         </div>
         <h3>Kéo thả file CSV vào đây</h3>
-        <p>hoặc click để chọn file <span class="code-inline">audit_TENMAYTÍNH.csv</span></p>
+        <p>hoặc click để chọn file <span style="font-family:var(--mono);color:var(--yellow)">audit_TENMAYTÍNH.csv</span></p>
       </div>
-
       <input type="file" id="fileInput" accept=".csv" onchange="handleFileSelect(event)">
+    </div>
 
-      <div id="uploadError" style="display:none;margin-top:12px;" class="alert-banner alert-red">
-        <span>⚠</span> <span id="uploadErrorMsg"></span>
-      </div>
+    <!-- PASTE MODE -->
+    <div class="card" id="mode-paste" style="display:none;">
+      <div class="card-title">// Dán nội dung CSV</div>
+      <textarea class="paste-area" id="pasteArea" placeholder="Dán toàn bộ nội dung file audit_*.csv vào đây (bao gồm dòng tiêu đề + dòng dữ liệu)..."></textarea>
+      <button class="btn btn-primary btn-full" style="margin-top:14px;" onclick="processPaste()">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3.5 3.5L13 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Xem báo cáo
+      </button>
+    </div>
 
-      <div style="display:flex;gap:10px;margin-top:20px;">
-        <button class="btn btn-secondary" onclick="goPage(2)">← Quay lại</button>
-      </div>
+    <div id="uploadError" style="display:none;" class="alert-banner alert-red">
+      <span>⚠</span> <span id="uploadErrorMsg"></span>
     </div>
   </div>
 
-  <!-- PAGE 4: RESULTS -->
-  <div class="page" id="page-4">
+  <!-- PAGE: RESULTS -->
+  <div class="page" id="page-results">
     <div id="resultsContent"></div>
   </div>
 
 </div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────────
-let selectedMode = 'Full';
-let userData = {};
-
 // ─── NAVIGATION ──────────────────────────────────────────────
-function goPage(n) {
+function goPage(id) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById('page-' + n).classList.add('active');
-  for (let i = 1; i <= 4; i++) {
-    const tab = document.getElementById('nav-' + i);
-    const num = document.getElementById('num-' + i);
-    tab.classList.remove('active', 'done');
-    if (i < n) { tab.classList.add('done'); num.textContent = '✓'; }
-    else if (i === n) { tab.classList.add('active'); num.textContent = i; }
-    else { num.textContent = i; }
-  }
+  document.getElementById(id).classList.add('active');
   window.scrollTo(0, 0);
 }
 
-function selectMode(m) {
-  selectedMode = m;
-  document.getElementById('mode-fast').classList.toggle('selected', m === 'Fast');
-  document.getElementById('mode-full').classList.toggle('selected', m === 'Full');
-}
-
-function goToStep2() {
-  const fn = document.getElementById('fullname').value.trim();
-  const em = document.getElementById('email').value.trim();
-  if (!fn) { document.getElementById('fullname').focus(); return; }
-  if (!em) { document.getElementById('email').focus(); return; }
-  userData = { fullName: fn, email: em, scanMode: selectedMode };
-  goPage(2);
-}
-
-// ─── POWERSHELL SCRIPT TEMPLATE ──────────────────────────────
-function getScriptContent() {
-  const fn = userData.fullName || '';
-  const em = userData.email || '';
-  const mode = userData.scanMode || 'Full';
-
-  // Full PS1 content embedded
-  return `<#
-.SYNOPSIS
-    CTIN PC Audit - Windows with CrackScanMode and license-review column.
-.DESCRIPTION
-    Pre-filled: FullName="${fn}", Email="${em}", CrackScanMode="${mode}"
-    Audit only: does not delete files, stop processes, or modify settings.
-#>
-
-$ErrorActionPreference = "SilentlyContinue"
-
-$CrackScanMode = "${mode}"
-$MaxFileIndicatorsPerRoot = 100
-$MaxSummaryItems = 50
-
-function ConvertTo-SafeString {
-    param([object]$Value, [string]$Default = "Unknown")
-    if ($null -eq $Value) { return $Default }
-    $s = [string]$Value
-    if ([string]::IsNullOrWhiteSpace($s)) { return $Default }
-    return ($s -replace "\`r|\`n", " ").Trim()
-}
-
-function Join-NonEmpty {
-    param([object[]]$Items, [string]$Separator = " || ", [string]$Default = "None")
-    $clean = @($Items | Where-Object { $_ -ne $null -and -not [string]::IsNullOrWhiteSpace([string]$_) } | ForEach-Object { ([string]$_).Trim() })
-    if ($clean.Count -eq 0) { return $Default }
-    return ($clean -join $Separator)
-}
-
-function Test-TextMatch {
-    param([string]$Text, [string[]]$Patterns)
-    if ([string]::IsNullOrWhiteSpace($Text)) { return $false }
-    foreach ($p in $Patterns) { if ($Text -match $p) { return $true } }
-    return $false
-}
-
-function Get-InstalledPrograms {
-    $paths = @(
-        "HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*",
-        "HKLM:\\Software\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*",
-        "HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*"
-    )
-    $programs = foreach ($path in $paths) {
-        Get-ItemProperty $path -ErrorAction SilentlyContinue |
-            Where-Object { $_.DisplayName } |
-            ForEach-Object {
-                [PSCustomObject]@{
-                    DisplayName     = ConvertTo-SafeString $_.DisplayName
-                    DisplayVersion  = ConvertTo-SafeString $_.DisplayVersion
-                    Publisher       = ConvertTo-SafeString $_.Publisher
-                    InstallDate     = ConvertTo-SafeString $_.InstallDate
-                    InstallLocation = ConvertTo-SafeString $_.InstallLocation
-                    UninstallString = ConvertTo-SafeString $_.UninstallString
-                }
-            }
-    }
-    $programs | Sort-Object DisplayName, DisplayVersion, Publisher -Unique
-}
-
-function Get-DiskInventory {
-    $diskModel = @(); $diskType = @(); $diskSize = @()
-    $physical = Get-PhysicalDisk -ErrorAction SilentlyContinue
-    if ($physical) {
-        foreach ($d in $physical) {
-            $model = ConvertTo-SafeString $d.FriendlyName
-            $media = ConvertTo-SafeString $d.MediaType
-            $size  = if ($d.Size) { [math]::Round($d.Size / 1GB, 2) } else { "Unknown" }
-            $diskModel += $model; $diskType += "$model ($media)"; $diskSize += "$model ${size}GB"
-        }
-    } else {
-        Get-CimInstance Win32_DiskDrive | ForEach-Object {
-            $model = ConvertTo-SafeString $_.Model
-            $media = ConvertTo-SafeString $_.MediaType
-            $size  = if ($_.Size) { [math]::Round($_.Size / 1GB, 2) } else { "Unknown" }
-            $diskModel += $model; $diskType += "$model ($media)"; $diskSize += "$model ${size}GB"
-        }
-    }
-    [PSCustomObject]@{
-        Disk_Model   = Join-NonEmpty $diskModel -Default "Unknown"
-        Disk_Type    = Join-NonEmpty $diskType -Default "Unknown"
-        Disk_Size_GB = Join-NonEmpty $diskSize -Default "Unknown"
-    }
-}
-
-function Get-SystemInventory {
-    $cs = Get-CimInstance Win32_ComputerSystem
-    $bios = Get-CimInstance Win32_BIOS
-    $os = Get-CimInstance Win32_OperatingSystem
-    $cpu = Get-CimInstance Win32_Processor | Select-Object -First 1
-    $gpu = Get-CimInstance Win32_VideoController | Select-Object -First 5
-    $base = Get-CimInstance Win32_BaseBoard | Select-Object -First 1
-    $ramModules = Get-CimInstance Win32_PhysicalMemory | ForEach-Object {
-        "$( ConvertTo-SafeString $_.Manufacturer) $(ConvertTo-SafeString $_.PartNumber) $([math]::Round($_.Capacity/1GB,2))GB $(ConvertTo-SafeString $_.Speed)MHz"
-    }
-    $ramTotalGB = if ($cs.TotalPhysicalMemory) { [math]::Round($cs.TotalPhysicalMemory/1GB,2) } else { "Unknown" }
-    $displayVersion = "Unknown"
-    try { $cv = Get-ItemProperty "HKLM:\\SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion"; $displayVersion = ConvertTo-SafeString $cv.DisplayVersion; if ($displayVersion -eq "Unknown") { $displayVersion = ConvertTo-SafeString $cv.ReleaseId } } catch {}
-    $secureBoot = "Unknown"; try { $secureBoot = Confirm-SecureBootUEFI } catch { $secureBoot = "Unsupported/Unknown" }
-    $tpmStatus = "Unknown"; try { $tpm = Get-Tpm; $tpmStatus = "Present=$($tpm.TpmPresent); Ready=$($tpm.TpmReady); Enabled=$($tpm.TpmEnabled); Activated=$($tpm.TpmActivated)" } catch {}
-    $disk = Get-DiskInventory
-    [PSCustomObject]@{
-        Manufacturer=$cs.Manufacturer; Model=$cs.Model; System_Type=$cs.SystemType; Serial_Number=$bios.SerialNumber
-        BIOS_Version=$bios.SMBIOSBIOSVersion; BIOS_Date=$bios.ReleaseDate; BaseBoard_Product=$base.Product
-        CPU_Name=$cpu.Name; CPU_Cores=$cpu.NumberOfCores; CPU_Logical=$cpu.NumberOfLogicalProcessors
-        RAM_Total_GB=$ramTotalGB; RAM_Detail=(Join-NonEmpty $ramModules)
-        Disk_Model=$disk.Disk_Model; Disk_Type=$disk.Disk_Type; Disk_Size_GB=$disk.Disk_Size_GB
-        GPU=(Join-NonEmpty ($gpu | ForEach-Object { $_.Name }))
-        OS_Caption=$os.Caption; OS_Version=$os.Version; OS_DisplayVersion=$displayVersion
-        OS_BuildNumber=$os.BuildNumber; OS_Architecture=$os.OSArchitecture
-        OS_InstallDate=$os.InstallDate; LastBootUpTime=$os.LastBootUpTime
-        SecureBoot=$secureBoot; TPM_Status=$tpmStatus
-    }
-}
-
-function Get-WindowsLicenseInfo {
-    $statusMap = @{0="Unlicensed";1="Licensed";2="OOBGrace";3="OOTGrace";4="NonGenuineGrace";5="Notification";6="ExtendedGrace"}
-    $selected = Get-CimInstance SoftwareLicensingProduct -ErrorAction SilentlyContinue |
-        Where-Object { $_.PartialProductKey -and $_.Name -match "Windows" } |
-        Sort-Object LicenseStatus -Descending | Select-Object -First 1
-    $licenseStatus="Unknown"; $description="Unknown"; $partialKey="Unknown"; $channel="Unknown"; $risk="Unknown"
-    if ($selected) {
-        $licenseStatus = if ($statusMap.ContainsKey([int]$selected.LicenseStatus)) { $statusMap[[int]$selected.LicenseStatus] } else { "Unknown" }
-        $description = ConvertTo-SafeString $selected.Description
-        $partialKey = ConvertTo-SafeString $selected.PartialProductKey
-        if ($description -match "VOLUME_KMSCLIENT") { $channel = "VOLUME_KMSCLIENT" }
-        elseif ($description -match "VOLUME_MAK") { $channel = "VOLUME_MAK" }
-        elseif ($description -match "RETAIL") { $channel = "RETAIL" }
-        elseif ($description -match "OEM") { $channel = "OEM" }
-        else { $channel = "Unknown" }
-        if ($licenseStatus -ne "Licensed") { $risk = "High - Windows is not licensed" }
-        elseif ($channel -eq "VOLUME_KMSCLIENT") { $risk = "Need verify - KMS may be legitimate in enterprise but should match CTIN policy" }
-        elseif ($channel -eq "Unknown") { $risk = "Need verify - License channel unknown" }
-        else { $risk = "Low" }
-    }
-    [PSCustomObject]@{OS_License_Status=$licenseStatus; OS_License_Channel=$channel; OS_License_Description=$description; OS_Partial_Product_Key=$partialKey; OS_License_Risk=$risk}
-}
-
-function Get-DefenderInventory {
-    $statusText = "Unknown"; $detectionsText = "None"
-    try { if (Get-Command Get-MpComputerStatus -EA SilentlyContinue) { $mp = Get-MpComputerStatus; $statusText = "AntivirusEnabled=$($mp.AntivirusEnabled); RealTimeProtectionEnabled=$($mp.RealTimeProtectionEnabled); BehaviorMonitorEnabled=$($mp.BehaviorMonitorEnabled); AMRunningMode=$($mp.AMRunningMode); SignatureAge=$($mp.AntivirusSignatureAge); LastQuickScan=$($mp.QuickScanEndTime)" } } catch {}
-    try { if (Get-Command Get-MpThreatDetection -EA SilentlyContinue) { $d = Get-MpThreatDetection | Select-Object -First 50; $detectionsText = Join-NonEmpty ($d | ForEach-Object { "$($_.ThreatName) | Action=$($_.ActionSuccess) | Resources=$($_.Resources)" }) } } catch {}
-    [PSCustomObject]@{Defender_Status=$statusText; Defender_Detections=$detectionsText}
-}
-
-function Get-CrackIndicators {
-    param([string]$ScanMode="Fast",[int]$MaxFileIndicatorsPerRoot=100,[int]$MaxSummaryItems=50)
-    $Indicators = New-Object System.Collections.Generic.List[object]
-    $LicenseReviewPrograms = New-Object System.Collections.Generic.List[object]
-    $SuspiciousPatterns = @("(?i)\\bcrack\\b","(?i)\\bkeygen\\b","(?i)\\bpatcher\\b","(?i)\\bpatch\\b","(?i)\\bactivator\\b","(?i)\\bloader\\b","(?i)\\brepack\\b","(?i)\\bserial\\b","(?i)license\\s*reset","(?i)trial\\s*reset","(?i)\\bkmspico\\b","(?i)\\bkmsauto\\b","(?i)kms\\s*auto","(?i)kms\\s*vl","(?i)\\baact\\b","(?i)auto\\s*kms","(?i)hacktool","(?i)potentially\\s*unwanted")
-    $LicenseReviewPatterns = @("(?i)adobe","(?i)photoshop","(?i)illustrator","(?i)premiere","(?i)after\\s*effects","(?i)acrobat","(?i)autodesk","(?i)autocad","(?i)revit","(?i)3ds\\s*max","(?i)navisworks","(?i)civil\\s*3d","(?i)coreldraw","(?i)corel","(?i)sketchup","(?i)solidworks","(?i)graphisoft","(?i)archicad","(?i)jetbrains","(?i)intellij","(?i)pycharm","(?i)webstorm","(?i)datagrip","(?i)vmware","(?i)virtualbox","(?i)parallels","(?i)winrar","(?i)internet\\s*download\\s*manager","(?i)\\bidm\\b","(?i)microsoft\\s*office","(?i)office\\s*professional","(?i)visio","(?i)project","(?i)nitro\\s*pdf","(?i)foxit","(?i)mindmanager","(?i)matlab","(?i)oracle","(?i)sql\\s*server")
-    $PatternCombined = $SuspiciousPatterns -join "|"
-    $Installed = @(Get-InstalledPrograms)
-    foreach ($app in $Installed) {
-        $combined = @($app.DisplayName,$app.DisplayVersion,$app.Publisher,$app.InstallLocation,$app.UninstallString) -join " | "
-        if (Test-TextMatch -Text $combined -Patterns $SuspiciousPatterns) {
-            $Indicators.Add([PSCustomObject]@{Category="InstalledProgram";Severity="Medium";Name=$app.DisplayName;Detail="$($app.DisplayName) | Version=$($app.DisplayVersion) | Publisher=$($app.Publisher) | Location=$($app.InstallLocation)";Evidence="Suspicious keyword in installed software registry"})
-        }
-        if (Test-TextMatch -Text $combined -Patterns $LicenseReviewPatterns) {
-            $LicenseReviewPrograms.Add([PSCustomObject]@{Name=$app.DisplayName;Detail="$($app.DisplayName) | Version=$($app.DisplayVersion) | Publisher=$($app.Publisher) | Location=$($app.InstallLocation)"})
-        }
-    }
-    if ($ScanMode -eq "Full") {
-        $ScanRoots = @("$env:USERPROFILE\\Desktop","$env:USERPROFILE\\Downloads","$env:USERPROFILE\\Documents","$env:APPDATA","$env:LOCALAPPDATA","C:\\ProgramData","C:\\Program Files","C:\\Program Files (x86)") | Where-Object { $_ -and (Test-Path $_) } | Sort-Object -Unique
-        foreach ($root in $ScanRoots) {
-            try { $count=0; Get-ChildItem -Path $root -Recurse -Force -EA SilentlyContinue | ForEach-Object { if ($count -lt $MaxFileIndicatorsPerRoot) { $text="$($_.Name) $($_.FullName)"; if ($text -match $PatternCombined) { $count++; $Indicators.Add([PSCustomObject]@{Category="SuspiciousFileOrFolder";Severity="Medium";Name=$_.Name;Detail=$_.FullName;Evidence="File/folder name contains suspicious keyword"}) } } } } catch {}
-        }
-    }
-    try { Get-ScheduledTask -EA SilentlyContinue | ForEach-Object { $a=($_.Actions|ForEach-Object{"$($_.Execute) $($_.Arguments)"})-join" | "; $t="$($_.TaskName) $($_.TaskPath) $a"; if(Test-TextMatch -Text $t -Patterns $SuspiciousPatterns){$Indicators.Add([PSCustomObject]@{Category="ScheduledTask";Severity="High";Name=$_.TaskName;Detail="$($_.TaskPath)|$a";Evidence="Scheduled task contains suspicious keyword"})} } } catch {}
-    try { Get-CimInstance Win32_Service -EA SilentlyContinue | ForEach-Object { $t="$($_.Name)|$($_.DisplayName)|$($_.PathName)|$($_.StartName)"; if(Test-TextMatch -Text $t -Patterns $SuspiciousPatterns){$Indicators.Add([PSCustomObject]@{Category="WindowsService";Severity="High";Name=$_.Name;Detail=$t;Evidence="Service contains suspicious keyword"})} } } catch {}
-    try { Get-CimInstance Win32_Process -EA SilentlyContinue | ForEach-Object { $t="$($_.Name)|$($_.ExecutablePath)|$($_.CommandLine)"; if(Test-TextMatch -Text $t -Patterns $SuspiciousPatterns){$Indicators.Add([PSCustomObject]@{Category="RunningProcess";Severity="High";Name=$_.Name;Detail=$t;Evidence="Running process contains suspicious keyword"})} } } catch {}
-    try { $hp="$env:SystemRoot\\System32\\drivers\\etc\\hosts"; if(Test-Path $hp){Get-Content $hp -EA SilentlyContinue|Where-Object{$_ -and ($_ -notmatch "^\\s*#") -and ($_ -match "(?i)microsoft|office|adobe|autodesk|corel|solidworks|graphisoft|license|licensing|activation|activate")}|ForEach-Object{$Indicators.Add([PSCustomObject]@{Category="HostsFile";Severity="Medium";Name="hosts";Detail=$_.Trim();Evidence="Hosts file contains licensing/activation entry"})}} } catch {}
-    try { if(Get-Command Get-MpThreatDetection -EA SilentlyContinue){Get-MpThreatDetection -EA SilentlyContinue|ForEach-Object{$t=$_|Out-String; if($t -match "(?i)hacktool|crack|keygen|kms|activator|patch|pua|potentially unwanted"){$Indicators.Add([PSCustomObject]@{Category="DefenderDetection";Severity="High";Name=(ConvertTo-SafeString $_.ThreatName "UnknownThreat");Detail=($t.Trim()-replace "\`r?\`n"," ");Evidence="Defender detection history contains crack/PUA"})}}}} catch {}
-    $highCount=@($Indicators|Where-Object{$_.Severity -eq "High"}).Count
-    $mediumCount=@($Indicators|Where-Object{$_.Severity -eq "Medium"}).Count
-    $totalCount=@($Indicators).Count
-    if($highCount -ge 1 -or $mediumCount -ge 5){$risk="High"} elseif($mediumCount -ge 1){$risk="Medium"} elseif($totalCount -ge 1){$risk="Low"} else{$risk="None"}
-    $summaryText = if($totalCount -gt 0){Join-NonEmpty ($Indicators|Select-Object -First $MaxSummaryItems|ForEach-Object{"[$($_.Severity)/$($_.Category)] $($_.Name): $($_.Detail)"})} else{"No suspicious crack indicators detected"}
-    [PSCustomObject]@{
-        Crack_Risk_Level=$risk; Crack_Indicators_Count=$totalCount; Crack_High_Count=$highCount; Crack_Medium_Count=$mediumCount
-        Crack_Defender_Status="See Defender_Status field"
-        Suspicious_InstalledPrograms=Join-NonEmpty ($Indicators|Where-Object{$_.Category -eq "InstalledProgram"}|Select-Object -ExpandProperty Detail -Unique)
-        InstalledPrograms_NeedLicenseReview=Join-NonEmpty ($LicenseReviewPrograms|Select-Object -ExpandProperty Detail -Unique)
-        Suspicious_Files_Or_Folders=if($ScanMode -eq "Fast"){"Skipped - CrackScanMode=Fast"}else{Join-NonEmpty ($Indicators|Where-Object{$_.Category -eq "SuspiciousFileOrFolder"}|ForEach-Object{"$($_.Name): $($_.Detail)"})}
-        Suspicious_Tasks=Join-NonEmpty ($Indicators|Where-Object{$_.Category -eq "ScheduledTask"}|ForEach-Object{"$($_.Name): $($_.Detail)"})
-        Suspicious_Services=Join-NonEmpty ($Indicators|Where-Object{$_.Category -eq "WindowsService"}|ForEach-Object{"$($_.Name): $($_.Detail)"})
-        Suspicious_Processes=Join-NonEmpty ($Indicators|Where-Object{$_.Category -eq "RunningProcess"}|ForEach-Object{"$($_.Name): $($_.Detail)"})
-        Suspicious_Hosts_Entries=Join-NonEmpty ($Indicators|Where-Object{$_.Category -eq "HostsFile"}|Select-Object -ExpandProperty Detail -Unique)
-        Defender_Crack_Detections=Join-NonEmpty ($Indicators|Where-Object{$_.Category -eq "DefenderDetection"}|ForEach-Object{"$($_.Name): $($_.Detail)"})
-        Crack_Indicators=$summaryText
-    }
-}
-
-Write-Host "==============================================" -ForegroundColor Cyan
-Write-Host " CTIN PC Audit - Windows" -ForegroundColor Cyan
-Write-Host " CrackScanMode: $CrackScanMode" -ForegroundColor Yellow
-Write-Host "==============================================" -ForegroundColor Cyan
-
-$FullName = "${fn}"
-$Email = "${em}"
-if ([string]::IsNullOrWhiteSpace($FullName)) { $FullName = Read-Host "Nhap Ho va Ten" }
-if ([string]::IsNullOrWhiteSpace($Email))    { $Email = Read-Host "Nhap Dia chi Email" }
-if ([string]::IsNullOrWhiteSpace($FullName)) { $FullName = "Unknown" }
-if ([string]::IsNullOrWhiteSpace($Email))    { $Email = "Unknown" }
-
-$AuditTime = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
-$ComputerName = $env:COMPUTERNAME
-$UserName = "$env:USERDOMAIN\\$env:USERNAME"
-
-Write-Host "Dang thu thap thong tin he thong..." -ForegroundColor Cyan
-$SystemInfo = Get-SystemInventory
-Write-Host "Dang thu thap thong tin license Windows..." -ForegroundColor Cyan
-$LicenseInfo = Get-WindowsLicenseInfo
-Write-Host "Dang thu thap trang thai Microsoft Defender..." -ForegroundColor Cyan
-$DefenderInfo = Get-DefenderInventory
-Write-Host "Dang liet ke phan mem da cai..." -ForegroundColor Cyan
-$InstalledPrograms = Get-InstalledPrograms
-$InstalledSoftwareCount = @($InstalledPrograms).Count
-$InstalledSoftwareList = Join-NonEmpty ($InstalledPrograms | ForEach-Object { "$($_.DisplayName) $($_.DisplayVersion) [$($_.Publisher)]" }) -Default "None"
-Write-Host "Dang kiem tra dau hieu nghi van crack/license theo che do $CrackScanMode..." -ForegroundColor Yellow
-$CrackCheck = Get-CrackIndicators -ScanMode $CrackScanMode -MaxFileIndicatorsPerRoot $MaxFileIndicatorsPerRoot -MaxSummaryItems $MaxSummaryItems
-
-$result = [PSCustomObject]@{
-    Audit_Time=$AuditTime; CrackScanMode=$CrackScanMode; FullName=$FullName; Email=$Email; ComputerName=$ComputerName; Current_User=$UserName
-    Manufacturer=$SystemInfo.Manufacturer; Model=$SystemInfo.Model; System_Type=$SystemInfo.System_Type; Serial_Number=$SystemInfo.Serial_Number
-    BIOS_Version=$SystemInfo.BIOS_Version; BIOS_Date=$SystemInfo.BIOS_Date; BaseBoard_Product=$SystemInfo.BaseBoard_Product
-    CPU_Name=$SystemInfo.CPU_Name; CPU_Cores=$SystemInfo.CPU_Cores; CPU_Logical=$SystemInfo.CPU_Logical
-    RAM_Total_GB=$SystemInfo.RAM_Total_GB; RAM_Detail=$SystemInfo.RAM_Detail
-    Disk_Model=$SystemInfo.Disk_Model; Disk_Type=$SystemInfo.Disk_Type; Disk_Size_GB=$SystemInfo.Disk_Size_GB; GPU=$SystemInfo.GPU
-    OS_Caption=$SystemInfo.OS_Caption; OS_Version=$SystemInfo.OS_Version; OS_DisplayVersion=$SystemInfo.OS_DisplayVersion
-    OS_BuildNumber=$SystemInfo.OS_BuildNumber; OS_Architecture=$SystemInfo.OS_Architecture
-    OS_InstallDate=$SystemInfo.OS_InstallDate; LastBootUpTime=$SystemInfo.LastBootUpTime
-    SecureBoot=$SystemInfo.SecureBoot; TPM_Status=$SystemInfo.TPM_Status
-    OS_License_Status=$LicenseInfo.OS_License_Status; OS_License_Channel=$LicenseInfo.OS_License_Channel
-    OS_License_Description=$LicenseInfo.OS_License_Description; OS_Partial_Product_Key=$LicenseInfo.OS_Partial_Product_Key; OS_License_Risk=$LicenseInfo.OS_License_Risk
-    Defender_Status=$DefenderInfo.Defender_Status; Defender_Detections=$DefenderInfo.Defender_Detections
-    InstalledSoftware_Count=$InstalledSoftwareCount; InstalledSoftware_List=$InstalledSoftwareList
-    Crack_Risk_Level=$CrackCheck.Crack_Risk_Level; Crack_Indicators_Count=$CrackCheck.Crack_Indicators_Count
-    Crack_High_Count=$CrackCheck.Crack_High_Count; Crack_Medium_Count=$CrackCheck.Crack_Medium_Count
-    Crack_Defender_Status=$CrackCheck.Crack_Defender_Status
-    Suspicious_InstalledPrograms=$CrackCheck.Suspicious_InstalledPrograms
-    InstalledPrograms_NeedLicenseReview=$CrackCheck.InstalledPrograms_NeedLicenseReview
-    Suspicious_Files_Or_Folders=$CrackCheck.Suspicious_Files_Or_Folders
-    Suspicious_Tasks=$CrackCheck.Suspicious_Tasks; Suspicious_Services=$CrackCheck.Suspicious_Services
-    Suspicious_Processes=$CrackCheck.Suspicious_Processes; Suspicious_Hosts_Entries=$CrackCheck.Suspicious_Hosts_Entries
-    Defender_Crack_Detections=$CrackCheck.Defender_Crack_Detections; Crack_Indicators=$CrackCheck.Crack_Indicators
-    Audit_Note="Suspicious indicators are technical signals only. InstalledPrograms_NeedLicenseReview means commercial software requiring license verification, not a crack conclusion."
-}
-
-$outputFolder = Join-Path ([Environment]::GetFolderPath("Desktop")) "PC_Audit"
-if (!(Test-Path $outputFolder)) { New-Item -ItemType Directory -Path $outputFolder -Force | Out-Null }
-$safeComputerName = ($ComputerName -replace '[\\\\/:*?"<>|]', '_')
-$outputFile = Join-Path $outputFolder "audit_${safeComputerName}.csv"
-
-try {
-    $result | Export-Csv -Path $outputFile -NoTypeInformation -Encoding UTF8
-    Write-Host "" 
-    Write-Host "Hoan thanh audit." -ForegroundColor Green
-    Write-Host "File ket qua: $outputFile" -ForegroundColor Green
-    Write-Host "CrackScanMode=$CrackScanMode" -ForegroundColor Yellow
-} catch {
-    Write-Host "Loi khi xuat CSV: $($_.Exception.Message)" -ForegroundColor Red
-    exit 1
-}
-
-Read-Host "Nhan Enter de thoat"
-`;
-}
-
-function downloadScript() {
-  const content = getScriptContent();
-  const blob = new Blob([content], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'audit_pc5.ps1';
-  a.click();
-  URL.revokeObjectURL(url);
-  document.getElementById('scriptSizeLabel').textContent = 'Script PowerShell — đã cài sẵn tên & email';
-}
-
-function downloadBat() {
-  const fn = userData.fullName || '';
-  const em = userData.email || '';
-  const content = `@echo off
-echo Dang thu thap thong tin may tinh Windows...
-echo.
-powershell -NoProfile -ExecutionPolicy Bypass -File "%~dp0audit_pc5.ps1"
-echo.
-echo Hoan thanh audit!
-pause
-`;
-  const blob = new Blob([content], { type: 'text/plain' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'run_audit5.bat';
-  a.click();
-  URL.revokeObjectURL(url);
+function switchInputMode(mode) {
+  document.getElementById('tab-upload').classList.toggle('active', mode === 'upload');
+  document.getElementById('tab-paste').classList.toggle('active', mode === 'paste');
+  document.getElementById('mode-upload').style.display = mode === 'upload' ? '' : 'none';
+  document.getElementById('mode-paste').style.display = mode === 'paste' ? '' : 'none';
+  hideUploadError();
 }
 
 // ─── CSV PARSING ─────────────────────────────────────────────
 function parseCSV(text) {
-  // Handle BOM
   if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
   const lines = text.split(/\r?\n/).filter(l => l.trim());
   if (lines.length < 2) return null;
@@ -1271,7 +502,6 @@ function handleDrop(e) {
   const file = e.dataTransfer.files[0];
   if (file) processFile(file);
 }
-
 function handleFileSelect(e) {
   const file = e.target.files[0];
   if (file) processFile(file);
@@ -1283,20 +513,35 @@ function processFile(file) {
     return;
   }
   const reader = new FileReader();
-  reader.onload = (e) => {
-    const data = parseCSV(e.target.result);
-    if (!data) { showUploadError('Không thể đọc file CSV. Hãy kiểm tra file có đúng định dạng không.'); return; }
-    if (!data.ComputerName && !data.FullName) { showUploadError('File CSV không đúng định dạng audit. Hãy chạy script audit_pc5.ps1 trước.'); return; }
-    renderResults(data);
-    goPage(4);
-  };
+  reader.onload = (e) => loadCSVText(e.target.result);
   reader.readAsText(file, 'UTF-8');
+}
+
+function processPaste() {
+  const text = document.getElementById('pasteArea').value;
+  if (!text.trim()) {
+    showUploadError('Vui lòng dán nội dung CSV trước khi xem báo cáo.');
+    return;
+  }
+  loadCSVText(text);
+}
+
+function loadCSVText(text) {
+  const data = parseCSV(text);
+  if (!data) { showUploadError('Không thể đọc dữ liệu CSV. Hãy kiểm tra định dạng (cần có dòng tiêu đề + dòng dữ liệu).'); return; }
+  if (!data.ComputerName && !data.FullName) { showUploadError('Dữ liệu không đúng định dạng audit. Hãy kiểm tra lại file/nội dung từ script audit_pc5.ps1.'); return; }
+  hideUploadError();
+  renderResults(data);
+  goPage('page-results');
 }
 
 function showUploadError(msg) {
   const el = document.getElementById('uploadError');
   document.getElementById('uploadErrorMsg').textContent = msg;
   el.style.display = 'flex';
+}
+function hideUploadError() {
+  document.getElementById('uploadError').style.display = 'none';
 }
 
 // ─── RENDER RESULTS ──────────────────────────────────────────
@@ -1305,18 +550,16 @@ function renderResults(d) {
   const riskLevel = get('Crack_Risk_Level');
   const riskClass = 'risk-' + riskLevel.toLowerCase();
 
-  // License risk banner
   let licenseBanner = '';
   const lRisk = get('OS_License_Risk');
   if (lRisk.toLowerCase().includes('high')) {
-    licenseBanner = `<div class="alert-banner alert-red">⚠ ${lRisk}</div>`;
+    licenseBanner = `<div class="alert-banner alert-red">⚠ ${escHtml(lRisk)}</div>`;
   } else if (lRisk.toLowerCase().includes('need verify') || lRisk.toLowerCase().includes('kms')) {
-    licenseBanner = `<div class="alert-banner alert-yellow">⚡ ${lRisk}</div>`;
+    licenseBanner = `<div class="alert-banner alert-yellow">⚡ ${escHtml(lRisk)}</div>`;
   } else if (lRisk.toLowerCase() === 'low') {
     licenseBanner = `<div class="alert-banner alert-green">✓ Windows license: Low risk</div>`;
   }
 
-  // Software list
   const softwareList = get('InstalledSoftware_List');
   const needReview = get('InstalledPrograms_NeedLicenseReview');
   const reviewNames = needReview !== '—'
@@ -1339,10 +582,9 @@ function renderResults(d) {
       </tr>`;
     });
   } else {
-    softwareRows = '<tr><td colspan="3" style="color:var(--text-muted);text-align:center;padding:20px">Không có dữ liệu</td></tr>';
+    softwareRows = '<tr><td colspan="3" style="color:var(--muted);text-align:center;padding:20px">Không có dữ liệu</td></tr>';
   }
 
-  // Crack indicators
   const indicators = get('Crack_Indicators');
   let indicatorItems = '';
   if (indicators && indicators !== '—' && indicators !== 'No suspicious crack indicators detected') {
@@ -1353,7 +595,6 @@ function renderResults(d) {
     indicatorItems = `<div class="alert-banner alert-green" style="margin:0">✓ Không phát hiện dấu hiệu nghi vấn crack</div>`;
   }
 
-  // License review list
   let reviewItems = '';
   if (needReview && needReview !== '—') {
     needReview.split(' || ').forEach(item => {
@@ -1370,11 +611,10 @@ function renderResults(d) {
         <p>${escHtml(get('Email'))} · ${escHtml(get('ComputerName'))} · ${escHtml(get('Audit_Time'))}</p>
       </div>
       <div>
-        <div class="risk-badge ${riskClass}">CRACK RISK: ${riskLevel}</div>
+        <div class="risk-badge ${riskClass}">CRACK RISK: ${escHtml(riskLevel)}</div>
       </div>
     </div>
 
-    <!-- OVERVIEW CELLS -->
     <div class="info-grid">
       <div class="info-cell">
         <div class="info-label">Máy tính</div>
@@ -1404,7 +644,6 @@ function renderResults(d) {
 
     ${licenseBanner}
 
-    <!-- HARDWARE -->
     <div class="section-block">
       <div class="section-header">Phần cứng</div>
       <div class="card" style="padding:16px 20px;">
@@ -1423,7 +662,6 @@ function renderResults(d) {
       </div>
     </div>
 
-    <!-- OS & LICENSE -->
     <div class="section-block">
       <div class="section-header">Hệ điều hành & License</div>
       <div class="card" style="padding:16px 20px;">
@@ -1436,12 +674,11 @@ function renderResults(d) {
           <tr><td>License Channel</td><td>${escHtml(get('OS_License_Channel'))}</td></tr>
           <tr><td>Product Key (partial)</td><td><span style="font-family:var(--mono)">${escHtml(get('OS_Partial_Product_Key'))}</span></td></tr>
           <tr><td>License Risk</td><td>${escHtml(get('OS_License_Risk'))}</td></tr>
-          <tr><td>Defender Status</td><td style="font-size:11px;color:var(--text-dim)">${escHtml(get('Defender_Status'))}</td></tr>
+          <tr><td>Defender Status</td><td style="font-size:11px;color:var(--dim)">${escHtml(get('Defender_Status'))}</td></tr>
         </table>
       </div>
     </div>
 
-    <!-- CRACK CHECK -->
     <div class="section-block">
       <div class="section-header">Kiểm tra Crack / Bản quyền</div>
       <div class="crack-counts">
@@ -1458,18 +695,16 @@ function renderResults(d) {
           <div class="count-label">Tổng dấu hiệu</div>
         </div>
       </div>
-      <div style="margin-bottom:10px;font-size:12px;color:var(--text-muted);">Scan mode: <span style="color:var(--yellow);font-family:var(--mono)">${escHtml(get('CrackScanMode'))}</span></div>
+      <div style="margin-bottom:10px;font-size:12px;color:var(--muted);">Scan mode: <span style="color:var(--yellow);font-family:var(--mono)">${escHtml(get('CrackScanMode'))}</span></div>
       ${indicatorItems}
     </div>
 
-    <!-- LICENSE REVIEW -->
     <div class="section-block">
       <div class="section-header">Phần mềm cần xác nhận License</div>
-      <div style="font-size:12px;color:var(--text-muted);margin-bottom:10px;">Không phải kết luận crack — cần xác minh bản quyền/đăng ký phần mềm thương mại.</div>
+      <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Không phải kết luận crack — cần xác minh bản quyền/đăng ký phần mềm thương mại.</div>
       <div class="indicator-list">${reviewItems}</div>
     </div>
 
-    <!-- SOFTWARE LIST -->
     <div class="section-block">
       <div class="section-header">Danh sách phần mềm đã cài (${escHtml(get('InstalledSoftware_Count'))})</div>
       <input class="search-bar" placeholder="Tìm kiếm phần mềm..." oninput="filterSoftware(this.value)">
@@ -1482,7 +717,7 @@ function renderResults(d) {
     </div>
 
     <div class="actions-row">
-      <button class="btn btn-secondary" onclick="goPage(3)">← Upload file khác</button>
+      <button class="btn btn-secondary" onclick="resetViewer()">← Xem dữ liệu khác</button>
       <button class="btn btn-primary" onclick="exportReport()">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v7M7 9l-3-3M7 9l3-3M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         Xuất báo cáo HTML
@@ -1494,12 +729,17 @@ function renderResults(d) {
   window._currentData = d;
 }
 
+function resetViewer() {
+  document.getElementById('pasteArea').value = '';
+  document.getElementById('fileInput').value = '';
+  hideUploadError();
+  goPage('page-upload');
+}
+
 function filterSoftware(q) {
   const rows = document.querySelectorAll('#softBody tr');
   const lq = q.toLowerCase();
-  rows.forEach(r => {
-    r.style.display = r.textContent.toLowerCase().includes(lq) ? '' : 'none';
-  });
+  rows.forEach(r => { r.style.display = r.textContent.toLowerCase().includes(lq) ? '' : 'none'; });
 }
 
 function exportReport() {
