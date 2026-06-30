@@ -367,6 +367,23 @@
     border-top: 1px solid var(--border);
   }
 
+  .picker-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 16px 20px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .picker-card:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .picker-name { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+  .picker-meta { font-size: 12px; color: var(--muted); font-family: var(--mono); }
+
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #2a3050; border-radius: 3px; }
@@ -439,6 +456,19 @@
     </div>
   </div>
 
+  <!-- PAGE: PICK ROW (multi-row paste) -->
+  <div class="page" id="page-picker">
+    <div class="hero" style="margin-bottom:24px;">
+      <div class="hero-tag">// CHỌN MÁY ĐỂ XEM</div>
+      <h1 style="font-size:24px;">Tìm thấy <strong id="pickerCount">0</strong> bản ghi</h1>
+      <p>Chọn một máy tính để xem báo cáo chi tiết.</p>
+    </div>
+    <div id="pickerList"></div>
+    <div class="actions-row">
+      <button class="btn btn-secondary" onclick="resetViewer()">← Nhập dữ liệu khác</button>
+    </div>
+  </div>
+
   <!-- PAGE: RESULTS -->
   <div class="page" id="page-results">
     <div id="resultsContent"></div>
@@ -462,35 +492,50 @@ function switchInputMode(mode) {
   hideUploadError();
 }
 
-// ─── CSV PARSING ─────────────────────────────────────────────
+// ─── CSV / TSV PARSING ───────────────────────────────────────
+function detectDelimiter(text) {
+  const firstLine = text.split(/\r?\n/).find(l => l.trim()) || '';
+  const tabCount = (firstLine.match(/\t/g) || []).length;
+  const commaCount = (firstLine.match(/,/g) || []).length;
+  // Tab takes priority since pasted spreadsheet data nearly always uses tabs
+  return tabCount >= commaCount ? '\t' : ',';
+}
+
+function parseLine(line, delimiter) {
+  const fields = [];
+  let cur = '', inQ = false;
+  for (let i = 0; i < line.length; i++) {
+    const c = line[i];
+    if (c === '"') {
+      if (inQ && line[i+1] === '"') { cur += '"'; i++; }
+      else { inQ = !inQ; }
+    } else if (c === delimiter && !inQ) {
+      fields.push(cur); cur = '';
+    } else {
+      cur += c;
+    }
+  }
+  fields.push(cur);
+  return fields;
+}
+
+// Returns an ARRAY of row objects (supports multiple data rows pasted at once)
 function parseCSV(text) {
   if (text.charCodeAt(0) === 0xFEFF) text = text.slice(1);
   const lines = text.split(/\r?\n/).filter(l => l.trim());
   if (lines.length < 2) return null;
 
-  function parseLine(line) {
-    const fields = [];
-    let cur = '', inQ = false;
-    for (let i = 0; i < line.length; i++) {
-      const c = line[i];
-      if (c === '"') {
-        if (inQ && line[i+1] === '"') { cur += '"'; i++; }
-        else { inQ = !inQ; }
-      } else if (c === ',' && !inQ) {
-        fields.push(cur); cur = '';
-      } else {
-        cur += c;
-      }
-    }
-    fields.push(cur);
-    return fields;
-  }
+  const delimiter = detectDelimiter(text);
+  const headers = parseLine(lines[0], delimiter).map(h => h.trim());
 
-  const headers = parseLine(lines[0]);
-  const values = parseLine(lines[1]);
-  const obj = {};
-  headers.forEach((h, i) => { obj[h.trim()] = (values[i] || '').trim(); });
-  return obj;
+  const rows = [];
+  for (let i = 1; i < lines.length; i++) {
+    const values = parseLine(lines[i], delimiter);
+    const obj = {};
+    headers.forEach((h, idx) => { obj[h] = (values[idx] || '').trim(); });
+    rows.push(obj);
+  }
+  return rows;
 }
 
 // ─── FILE HANDLING ───────────────────────────────────────────
@@ -527,11 +572,44 @@ function processPaste() {
 }
 
 function loadCSVText(text) {
-  const data = parseCSV(text);
-  if (!data) { showUploadError('Không thể đọc dữ liệu CSV. Hãy kiểm tra định dạng (cần có dòng tiêu đề + dòng dữ liệu).'); return; }
-  if (!data.ComputerName && !data.FullName) { showUploadError('Dữ liệu không đúng định dạng audit. Hãy kiểm tra lại file/nội dung từ script audit_pc5.ps1.'); return; }
+  const rows = parseCSV(text);
+  if (!rows || rows.length === 0) { showUploadError('Không thể đọc dữ liệu. Hãy kiểm tra định dạng (cần có dòng tiêu đề + ít nhất một dòng dữ liệu, phân tách bằng dấu phẩy hoặc Tab).'); return; }
+
+  const validRows = rows.filter(r => r.ComputerName || r.FullName);
+  if (validRows.length === 0) { showUploadError('Dữ liệu không đúng định dạng audit. Hãy kiểm tra lại nội dung từ script audit_pc5.ps1 (cần các cột như ComputerName, FullName...).'); return; }
+
   hideUploadError();
-  renderResults(data);
+  window._allRows = validRows;
+
+  if (validRows.length === 1) {
+    renderResults(validRows[0]);
+    goPage('page-results');
+  } else {
+    renderRowPicker(validRows);
+    goPage('page-picker');
+  }
+}
+
+function renderRowPicker(rows) {
+  let cards = '';
+  rows.forEach((r, i) => {
+    const risk = (r.Crack_Risk_Level || 'Unknown').trim();
+    const riskClass = 'risk-' + risk.toLowerCase();
+    cards += `
+      <div class="picker-card" onclick="selectRow(${i})">
+        <div class="picker-card-main">
+          <div class="picker-name">${escHtml(r.FullName || 'Unknown')}</div>
+          <div class="picker-meta">${escHtml(r.ComputerName || '—')} · ${escHtml(r.Email || '—')} · ${escHtml(r.Audit_Time || '—')}</div>
+        </div>
+        <div class="risk-badge ${riskClass}" style="font-size:11px;padding:4px 12px;">${escHtml(risk)}</div>
+      </div>`;
+  });
+  document.getElementById('pickerList').innerHTML = cards;
+  document.getElementById('pickerCount').textContent = rows.length;
+}
+
+function selectRow(i) {
+  renderResults(window._allRows[i]);
   goPage('page-results');
 }
 
@@ -717,7 +795,7 @@ function renderResults(d) {
     </div>
 
     <div class="actions-row">
-      <button class="btn btn-secondary" onclick="resetViewer()">← Xem dữ liệu khác</button>
+      <button class="btn btn-secondary" onclick="backFromResults()">← ${(window._allRows && window._allRows.length > 1) ? 'Chọn máy khác' : 'Xem dữ liệu khác'}</button>
       <button class="btn btn-primary" onclick="exportReport()">
         <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v7M7 9l-3-3M7 9l3-3M2 12h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
         Xuất báo cáo HTML
@@ -729,9 +807,18 @@ function renderResults(d) {
   window._currentData = d;
 }
 
+function backFromResults() {
+  if (window._allRows && window._allRows.length > 1) {
+    goPage('page-picker');
+  } else {
+    resetViewer();
+  }
+}
+
 function resetViewer() {
   document.getElementById('pasteArea').value = '';
   document.getElementById('fileInput').value = '';
+  window._allRows = null;
   hideUploadError();
   goPage('page-upload');
 }
